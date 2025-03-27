@@ -1,49 +1,62 @@
-name: Allure Report
-run-name: ${{ github.actor }} is creating Allure report 🚀
+name: Запуск тестов Java/TestNG/Maven
 
 on:
-  push:
-    branches-ignore:
-      - '!main'
+  workflow_dispatch:
+    inputs:
+      ALLURE_JOB_RUN_ID:
+        description: ALLURE_JOB_RUN_ID - service parameter (leave blank)
+        required: false
+      ALLURE_USERNAME:
+        description: ALLURE_USERNAME - service parameter (leave blank)
+        required: false
+      BROWSER:
+        required: true
+        default: Google Chrome
+      ENDPOINT: 
+        required: true
+        default: Demo
+      OS:
+        required: true
+        default: Windows    
+      VERSION:
+        required: true
+        default: '5.16.0'
 
 jobs:
-  autotests:
-    name: Run tests and generate Allure Report
+  tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v3
 
-      - name: Set up Java 21
-        uses: actions/setup-java@v4.5.0
+      - name: Install Java
+        uses: actions/setup-java@v3
         with:
-          java-version: 21
-          cache: 'maven'
           distribution: 'zulu'
+          java-version: '17'
+          cache: 'maven'
 
-      - name: Run Test
-        run: ./mvnw verify
-        continue-on-error: true
+      - name: Get the latest allurectl
+        run: |
+          latest_version=$(curl -s https://api.github.com/repos/allure-framework/allurectl/releases/latest | jq -r .tag_name)
+          echo "ALLURECTL_VERSION=$latest_version" >> $GITHUB_ENV
 
-      - name: Setup Allure History
-        uses: actions/checkout@v4.2.2
-        if: always()
-        continue-on-error: true
+      - name: Install allurectl
+        uses: allure-framework/setup-allurectl@v1
         with:
-          ref: gh-pages
-          path: gh-pages
+          allure-endpoint: https://demo.testops.cloud/
+          allure-project-id: 3111
+          allure-token: ${{ secrets.ALLURE_TOKEN }}
+          allurectl-version: ${{ env.ALLURECTL_VERSION }}
 
-      - name: Generate Allure Report
-        uses: simple-elf/allure-report-action@v1.11
-        if: always()
-        with:
-          allure_results: target/allure-results
-          allure_history: allure-history
-
-      - name: Publish Allure Report
-        if: always()
-        uses: peaceiris/actions-gh-pages@v4.0.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: allure-history
+      - name: Run tests with Maven
+        run: |
+          mvn clean test
+          allurectl watch -- mvn clean test
+        env:
+          ALLURE_RESULTS: "target/allure-results"
+          ALLURE_TESTPLAN_PATH: "./testplan.json"
+          BRANCH: ${{ github.ref_name }}
+          BROWSER: ${{ inputs.BROWSER }}
+          ENDPOINT: ${{ inputs.ENDPOINT }}
+          OS: ${{ inputs.OS }}
+          VERSION: ${{ inputs.VERSION }}
