@@ -8,30 +8,23 @@ import io.qameta.allure.Features;
 import io.qameta.allure.Owner;
 import io.qameta.allure.Stories;
 import io.qameta.allure.Story;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test; // Импортируем аннотацию TestNG
+import org.testng.Assert; // Используем Assert из TestNG для проверки
 
 import java.util.Random; // Импортируем класс Random для генерации случайных чисел
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.fail; // Импортируем fail() для принудительного падения теста
+import static org.testng.Assert.fail; // Импортируем fail() из TestNG
 
 public class javatestngmaven01 {
 
     private static final Random RANDOM = new Random(); // Создаем экземпляр Random для генерации случайных значений
 
     @Test
-    @DisplayName("Имя теста") // Отображаемое имя теста
     @Owner("qartavtsev_admin") // Назначаем владельца теста
-    @Epics({
-        @Epic("Authentication and Access Management"), // Указываем эпик (глобальная категория теста)
-    })
-    @Features({
-        @Feature("Authentication"), // Определяем функциональность, к которой относится тест
-    })
-    @Stories({
-        @Story("Create new issue"), // Определяем конкретный сценарий в рамках функциональности
-    })
+    @Epic("Authentication and Access Management") // Указываем эпик (глобальная категория теста)
+    @Feature("Authentication") // Определяем функциональность, к которой относится тест
+    @Story("Create new issue") // Определяем конкретный сценарий в рамках функциональности
     public void shouldTest() {
         Allure.label("priority", "1 - High   "); // Устанавливаем приоритет теста
         Allure.label("service", "Monitoring Service"); // Указываем сервис, к которому относится тест
