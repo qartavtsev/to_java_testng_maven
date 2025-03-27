@@ -43,8 +43,8 @@ jobs:
       - name: Install allurectl
         uses: allure-framework/setup-allurectl@v1
         with:
-          allure-endpoint: https://demo.testops.cloud/
-          allure-project-id: 3111
+          allure-endpoint: https://demo.qatools.cloud/
+          allure-project-id: 55
           allure-token: ${{ secrets.ALLURE_TOKEN }}
           allurectl-version: ${{ env.ALLURECTL_VERSION }}
 
