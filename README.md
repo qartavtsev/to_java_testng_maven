@@ -1,4 +1,5 @@
-to_java_testng_maven-main
+# Структура
+```
 ├── .gitignore                         # Файл, исключающий ненужные файлы из Git
 ├── README.md                          # Документация проекта
 ├── mvnw                               # Скрипт для запуска Maven Wrapper в Unix/Linux
