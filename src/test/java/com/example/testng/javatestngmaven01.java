@@ -16,7 +16,7 @@ import java.util.Random; // Импортируем класс Random для ге
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.fail; // Импортируем fail() для принудительного падения теста
 
-public class java-testng-maven-01 {
+public class javatestngmaven01 {
 
     private static final Random RANDOM = new Random(); // Создаем экземпляр Random для генерации случайных значений
 
